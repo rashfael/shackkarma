@@ -1,8 +1,14 @@
 Controller = require 'controllers/base/controller'
 DeedsPageView = require 'views/deeds_views'
+{Deed, Deeds} = require 'models/deeds'
 
 module.exports = class DeedsController extends Controller
-  historyURL: 'deeds'
+	historyURL: 'deeds'
 
-  index: ->
-    @view = new DeedsPageView()
+	index: ->
+		deeds = new Deeds()
+		deeds.fetch
+			success: (data) ->
+				console.log data
+		@view = new DeedsPageView
+			collection: deeds
