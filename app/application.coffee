@@ -1,16 +1,20 @@
 Chaplin = require 'chaplin'
+Router = require 'chaplin/lib/router'
 mediator = require 'mediator'
 routes = require 'routes'
-SessionController = require 'controllers/session_controller'
+AuthenticationController = require 'controllers/authentication_controller'
 HeaderController = require 'controllers/header_controller'
 FooterController = require 'controllers/footer_controller'
 Layout = require 'views/layout'
+
+require 'lib/iosync'
 
 # The application object
 module.exports = class Application extends Chaplin.Application
   # Set your application name here so the document title is set to
   # “Controller title – Site title” (see Layout#adjustTitle)
   title: 'Shack Karma'
+  serverUrl: 'http://localhost:9000/'
 
   initialize: ->
     super
@@ -19,19 +23,18 @@ module.exports = class Application extends Chaplin.Application
     @initDispatcher()
     @initLayout()
     @initMediator()
+    #@initRouter()
+    @router = new Router()
+    @initSocket ->
+      auth = new AuthenticationController()
 
-    # Application-specific scaffold
-    @initControllers()
+    mediator.subscribe '!auth:success', =>
+      @initControllers()
+      # register routes late
+      routes @router.match
+      @router.startHistory()
+      #mediator.publish '!router:route', ''
 
-    # Register all routes and start routing
-    @initRouter routes
-    # You might pass Router/History options as the second parameter.
-    # Chaplin enables pushState per default and Backbone uses / as
-    # the root per default. You might change that in the options
-    # if necessary:
-    # @initRouter routes, pushState: false, root: '/subdir/'
-
-    # Freeze the application instance to prevent further changes
     Object.freeze? this
 
   # Override standard layout initializer
@@ -61,4 +64,9 @@ module.exports = class Application extends Chaplin.Application
     Chaplin.mediator.user = null
     # Add additional application-specific properties and methods
     # Seal the mediator
-    Chaplin.mediator.seal()
+    # Chaplin.mediator.seal()
+
+  initSocket: (cb) =>
+    socket = io.connect @serverUrl
+    Backbone.socket = socket
+    socket.on 'connect', cb

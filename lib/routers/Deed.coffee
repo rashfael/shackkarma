@@ -1,5 +1,5 @@
 Model = global.mongoose.model 'Deed'
-Crud = require './Crud'
+Crud = require './IoCrud'
 
 module.exports = class ModelRouter extends Crud
 	model: Model

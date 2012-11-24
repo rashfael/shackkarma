@@ -1,0 +1,12 @@
+include mixins/form_helpers
+
+.page-header
+		h1 Create a new Deed
+
+form.form-horizontal
+	fieldset
+			mixin textfield({name:'name', label:'Name'})
+			mixin textarea({name:'description', label:'Description'})
+		.form-actions
+			button.btn.btn-primary Save
+			!= ' '

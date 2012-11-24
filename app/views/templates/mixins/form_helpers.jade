@@ -1,8 +1,98 @@
-mixin textfield(name, value, label, disabled)
-	.control-group
-		label.control-label(for=name)= label
+- function recognitionProbabilityToColor(probability) {
+-	if(typeof(probability != 'undefined')) {
+-		if(probability >= 99.0) {
+-			return 'success';
+-		} else if(probability >= 85.0) {
+-			return 'warning';
+-		} else if(probability >= 0.0) {
+-			return 'error';
+-		} else {
+-			return 'info';
+-		}
+-	} else {
+-		return '';
+-	}
+- }
+
+mixin textfield(options)
+	.control-group(class=recognitionProbabilityToColor(options.recognitionProbability))
+		- if(typeof(options.recognitionProbability) != 'undefined') {
+			- if(typeof(options.recognitionProbability.toFixed) != 'undefined') {
+				//
+					= ' ' + options.recognitionProbability.toFixed(2) + ' %'
+			- }
+		- }
+		label.control-label(for=options.name)= options.label
 		.controls
-			if(disabled)
-				input.input-xlarge.disabled(type='text', name=name, value=value, disabled)
-			else
-				input.input-xlarge(type='text', name=name, value=value)
+			- var classArr = [];
+			- if(options.size)
+				- classArr.push(options.size);
+			- else
+				- classArr.push('span8');
+			- if(options.disabled)
+				- classArr.push('disabled');
+			input(class=classArr, type='text', name=options.name, id=options.name, value=options.value, placeholder=options.placeholder || options.label)
+
+mixin textarea(options)
+	.control-group(class=recognitionProbabilityToColor(options.recognitionProbability))
+		- if(typeof(options.recognitionProbability) != 'undefined') {
+			- if(typeof(options.recognitionProbability.toFixed) != 'undefined') {
+				//
+					= ' ' + options.recognitionProbability.toFixed(2) + ' %'
+			- }
+		- }
+		label.control-label(for=options.name)= options.label
+		.controls
+			- var classArr = [];
+			- if(options.size)
+				- classArr.push(options.size);
+			- else
+				- classArr.push('span8');
+			- if(options.disabled)
+				- classArr.push('disabled');
+			textarea(class=classArr, name=options.name, id=options.name, placeholder=options.placeholder || options.label, rows=3)= options.value
+			
+mixin select(name, values, label)
+	.clearfix
+		label(for=name)= label
+		.input
+			select.xlarge(name=name)
+				- each value in values
+					- for (key in value) break;
+					option(value=key)= value[key]
+
+mixin checkbox(options)
+	.control-group(class=recognitionProbabilityToColor(options.recognitionProbability))
+		- if(typeof(options.recognitionProbability) != 'undefined') {
+			- if(typeof(options.recognitionProbability.toFixed) != 'undefined') {
+				//
+					= ' ' + options.recognitionProbability.toFixed(2) + ' %'
+			- }
+		- }
+		label.control-label(for=options.name)= options.label
+		.controls
+			.input-append
+				- if(options.value)
+					input(name=options.name, id=options.name, type='checkbox', checked='checked')
+				- else
+					input(name=options.name, id=options.name, type='checkbox')
+			
+mixin radiogroup(options)
+	.control-group(class=recognitionProbabilityToColor(options.recognitionProbability))
+		- if(typeof(options.recognitionProbability) != 'undefined') {
+			- if(typeof(options.recognitionProbability.toFixed) != 'undefined') {
+				//
+					= ' ' + options.recognitionProbability.toFixed(2) + ' %'
+			- }
+		- }
+		label.control-label(for=options.name)= options.label
+		.controls
+			.input-append
+				- for value in options.values
+					label.radio
+						- var buttonId = options.name + '_' + value.id
+						- if(value.id == options.value)
+							input(name=options.name, type='radio', id=buttonId, checked='checked')
+						- else
+							input(name=options.name, type='radio', id=buttonId)
+						= value.label

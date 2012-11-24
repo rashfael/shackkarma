@@ -7,7 +7,6 @@ module.exports = class Crud
 		app.put "/api/#{@prefix}/:id", @update
 		app.delete "/api/#{@prefix}/:id", @delete
 
-
 	list: (req, res) =>
 		@model.find req.query, (err, items) ->
 			console.log err if err?

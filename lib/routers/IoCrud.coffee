@@ -9,8 +9,8 @@ module.exports = class IoCrud
 			@item socket, id, cb
 		socket.on "#{@prefix}:delete", (_id, cb) =>
 			@delete socket, _id, cb
-		socket.on "#{@prefix}:update", (_id, cb) =>
-			@update socket, _id, cb
+		socket.on "#{@prefix}:update", (id, obj, cb) =>
+			@update socket, id, obj, cb
 
 	list: (socket, query, cb) =>
 		@model.find query, (err, items) ->
@@ -41,12 +41,10 @@ module.exports = class IoCrud
 				return cb err
 			res.send()
 	
-	update: (req, res) =>
-		item = req.body
-		id = item._id
-		delete item._id
-		@model.update {_id: id}, item, (err) ->
+	update: (socket, id, obj, cb) =>
+		delete obj._id
+		@model.update {_id: id}, obj, (err) ->
 			if err?
 				console.log err
 				return cb err
-			res.send()
+			cb null, obj

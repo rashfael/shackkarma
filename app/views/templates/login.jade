@@ -1,1 +1,8 @@
-h1 LOGIN!
+include mixins/form_helpers
+
+legend Login
+form.form-horizontal
+	mixin textfield({name:'username', label:'Benutzername'})
+	.control-group
+		.controls
+			button.btn(type='submit') Anmelden

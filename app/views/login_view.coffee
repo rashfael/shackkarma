@@ -4,8 +4,12 @@ PageView = require 'views/base/page_view'
 template = 
 
 module.exports = class LoginView extends PageView
-  template: require 'views/templates/login'
+	template: require 'views/templates/login'
 
-  initialize: ->
-    console.log 'login'
+	events:
+		'submit form': 'submit'
 
+	submit: (event) =>
+		event.preventDefault()
+		@model.set 'username', @$('#username').val()
+		return false
