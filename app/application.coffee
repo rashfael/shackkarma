@@ -11,62 +11,62 @@ require 'lib/iosync'
 
 # The application object
 module.exports = class Application extends Chaplin.Application
-  # Set your application name here so the document title is set to
-  # “Controller title – Site title” (see Layout#adjustTitle)
-  title: 'Shack Karma'
-  serverUrl: 'http://localhost:9000/'
+	# Set your application name here so the document title is set to
+	# “Controller title – Site title” (see Layout#adjustTitle)
+	title: 'Shack Karma'
+	serverUrl: 'http://localhost:9000/'
 
-  initialize: ->
-    super
+	initialize: ->
+		super
 
-    # Initialize core components
-    @initDispatcher()
-    @initLayout()
-    @initMediator()
-    #@initRouter()
-    @router = new Router()
-    @initSocket ->
-      auth = new AuthenticationController()
+		# Initialize core components
+		@initDispatcher()
+		@initLayout()
+		@initMediator()
+		#@initRouter()
+		@router = new Router()
+		@initSocket ->
+			auth = new AuthenticationController()
 
-    mediator.subscribe '!auth:success', =>
-      @initControllers()
-      # register routes late
-      routes @router.match
-      @router.startHistory()
-      #mediator.publish '!router:route', ''
+		mediator.subscribe '!auth:success', =>
+			@initControllers()
+			# register routes late
+			routes @router.match
+			@router.startHistory()
+			#mediator.publish '!router:route', ''
 
-    Object.freeze? this
+		Object.freeze? this
 
-  # Override standard layout initializer
-  # ------------------------------------
-  initLayout: ->
-    # Use an application-specific Layout class. Currently this adds
-    # no features to the standard Chaplin Layout, it’s an empty placeholder.
-    @layout = new Layout {@title}
+	# Override standard layout initializer
+	# ------------------------------------
+	initLayout: ->
+		# Use an application-specific Layout class. Currently this adds
+		# no features to the standard Chaplin Layout, it’s an empty placeholder.
+		@layout = new Layout {@title}
 
-  # Instantiate common controllers
-  # ------------------------------
-  initControllers: ->
-    # These controllers are active during the whole application runtime.
-    # You don’t need to instantiate all controllers here, only special
-    # controllers which do not to respond to routes. They may govern models
-    # and views which are needed the whole time, for example header, footer
-    # or navigation views.
-    # e.g. new NavigationController()
-    # new SessionController()
-    new HeaderController()
+	# Instantiate common controllers
+	# ------------------------------
+	initControllers: ->
+		# These controllers are active during the whole application runtime.
+		# You don’t need to instantiate all controllers here, only special
+		# controllers which do not to respond to routes. They may govern models
+		# and views which are needed the whole time, for example header, footer
+		# or navigation views.
+		# e.g. new NavigationController()
+		# new SessionController()
+		new HeaderController()
 		new FooterController()
 
-  # Create additional mediator properties
-  # -------------------------------------
-  initMediator: ->
-    # Create a user property
-    Chaplin.mediator.user = null
-    # Add additional application-specific properties and methods
-    # Seal the mediator
-    # Chaplin.mediator.seal()
+	# Create additional mediator properties
+	# -------------------------------------
+	initMediator: ->
+		# Create a user property
+		Chaplin.mediator.user = null
+		# Add additional application-specific properties and methods
+		# Seal the mediator
+		# Chaplin.mediator.seal()
 
-  initSocket: (cb) =>
-    socket = io.connect @serverUrl
-    Backbone.socket = socket
-    socket.on 'connect', cb
+	initSocket: (cb) =>
+		socket = io.connect @serverUrl
+		Backbone.socket = socket
+		socket.on 'connect', cb
